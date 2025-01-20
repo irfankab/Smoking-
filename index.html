@@ -1,0 +1,380 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quit Smoking Tracker</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            background: #121212; /* Dark background */
+            color: #ffffff; /* Light text */
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+        }
+        .container {
+            background: #1e1e1e; /* Dark container */
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            max-width: 600px;
+            width: 100%;
+        }
+        h1 {
+            color: #4CAF50; /* Green accent */
+            margin-bottom: 20px;
+        }
+        #counter {
+            font-size: 3.5em;
+            color: #4CAF50; /* Green accent */
+            font-weight: bold;
+            margin: 20px 0;
+        }
+        #time-counter {
+            font-size: 1.5em;
+            color: #ffffff; /* Light text */
+            margin: 20px 0;
+        }
+        .progress-container {
+            background: #333333; /* Dark progress bar background */
+            border-radius: 10px;
+            overflow: hidden;
+            margin: 20px 0;
+            position: relative;
+        }
+        .progress-bar {
+            height: 20px;
+            background: #4CAF50; /* Green progress bar */
+            width: 0;
+            transition: width 0.5s ease; /* Smooth animation */
+        }
+        .progress-report {
+            margin: 20px 0;
+            text-align: left;
+            display: none; /* Hidden by default */
+        }
+        .progress-report.visible {
+            display: block; /* Show when toggled */
+        }
+        .progress-report h3 {
+            color: #4CAF50; /* Green accent */
+        }
+        .percentage-display {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #4CAF50; /* Green accent */
+            margin-top: 10px;
+        }
+        .milestone-card {
+            display: flex;
+            align-items: center;
+            margin: 10px 0;
+            padding: 15px;
+            background: #333333; /* Dark card background */
+            border-radius: 10px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .milestone-card.completed {
+            background: #2E7D32; /* Darker green for completed milestones */
+        }
+        .milestone-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        .milestone-icon {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background: #4CAF50; /* Green icon background */
+            margin-right: 15px;
+        }
+        .milestone-icon.completed::after {
+            content: '✓';
+            color: white;
+            font-size: 1.5em;
+        }
+        .milestone-icon.upcoming {
+            background: #555; /* Gray for upcoming milestones */
+        }
+        .milestone-details {
+            flex: 1;
+        }
+        .milestone-details h4 {
+            margin: 0;
+            font-size: 1.2em;
+            color: #ffffff;
+        }
+        .milestone-details p {
+            margin: 5px 0 0;
+            color: #cccccc;
+        }
+        .confetti {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 1000;
+        }
+        .confetti div {
+            position: absolute;
+            width: 10px;
+            height: 10px;
+            background: #ff0;
+            animation: fall linear infinite;
+        }
+        @keyframes fall {
+            0% { transform: translateY(-10vh) rotate(0deg); }
+            100% { transform: translateY(110vh) rotate(360deg); }
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            color: white;
+            background: #4CAF50; /* Green button */
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s ease;
+            margin: 5px;
+        }
+        button.reset {
+            background: #f44336; /* Red button */
+        }
+        button.reset:hover {
+            background: #d32f2f; /* Darker red on hover */
+        }
+        button.progress-btn {
+            background: #2196F3; /* Blue button */
+        }
+        button.progress-btn:hover {
+            background: #1976D2; /* Darker blue on hover */
+        }
+        button:hover {
+            background: #45a049; /* Darker green on hover */
+        }
+        .start-date {
+            margin: 20px 0;
+            font-size: 0.9em;
+            color: #777; /* Gray text */
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+      const supabaseUrl = "https://ryqxjdxhilnwcfyaixfa.supabase.co"; // Your Supabase URL
+      const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ5cXhqZHhoaWxud2NmeWFpeGZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzczNTE2MTUsImV4cCI6MjA1MjkyNzYxNX0.lwbd8BDvyCIH-gwDTyq_UStFCCcC4XYrpXd9HnEnyEA"; // Your Public API Key
+      const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Quit Smoking Tracker</h1>
+        <div id="counter">0</div>
+        <div id="time-counter">0 days 00:00:00.000</div>
+        <div class="progress-container">
+            <div class="progress-bar" id="progress-bar"></div>
+        </div>
+        <button id="start-button">Start Tracking</button>
+        <button class="reset" onclick="resetCounter()">I slipped up, reset counter</button>
+        <button class="progress-btn" onclick="toggleProgressReport()">Progress Report</button>
+        <div class="start-date" id="start-date"></div>
+
+        <!-- Progress Report Section -->
+        <div class="progress-report" id="progress-report">
+            <h3>Progress Report</h3>
+            <div class="progress-container">
+                <div class="progress-bar" id="report-progress-bar"></div>
+            </div>
+            <div class="percentage-display" id="percentage-display">0.00000%</div>
+            <div id="progress-list"></div>
+        </div>
+    </div>
+
+    <!-- Confetti Animation -->
+    <div class="confetti" id="confetti"></div>
+
+    <script>
+        let counter = 0;
+        let startDate = null;
+        let interval = null;
+        const goalDays = 30; // 30-day goal
+
+        // Health benefits data
+        const healthBenefits = [
+            { days: 1, benefit: "Your heart rate and blood pressure drop to normal levels." },
+            { days: 2, benefit: "Nicotine is eliminated from your body." },
+            { days: 3, benefit: "Your sense of taste and smell improves." },
+            { days: 7, benefit: "Your lung function begins to improve." },
+            { days: 30, benefit: "Your risk of heart disease decreases significantly." }
+        ];
+
+        // Function to update the counter and UI
+        async function updateCounter() {
+            const now = new Date();
+            const timeDiff = now - startDate;
+            const days = timeDiff / (1000 * 60 * 60 * 24); // Total days with decimals
+            const hours = Math.floor((timeDiff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+            const minutes = Math.floor((timeDiff % (1000 * 60 * 60)) / (1000 * 60));
+            const seconds = Math.floor((timeDiff % (1000 * 60)) / 1000);
+            const milliseconds = Math.floor(timeDiff % 1000);
+
+            // Update the counter and time counter
+            document.getElementById('counter').textContent = Math.floor(days);
+            document.getElementById('time-counter').textContent = 
+                `${Math.floor(days)} days ${String(hours).padStart(2, '0')}:${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')}.${String(milliseconds).padStart(3, '0')}`;
+
+            // Update the progress bar
+            const progressPercentage = (days / goalDays) * 100;
+            const progressBar = document.getElementById('progress-bar');
+            progressBar.style.width = `${progressPercentage}%`;
+
+            // Update the progress bar and percentage display in the report
+            const reportProgressBar = document.getElementById('report-progress-bar');
+            reportProgressBar.style.width = `${progressPercentage}%`;
+
+            const percentageDisplay = document.getElementById('percentage-display');
+            percentageDisplay.textContent = `${progressPercentage.toFixed(5)}%`;
+
+            document.getElementById('start-date').textContent = `Start Date: ${startDate.toDateString()}`;
+
+            // Update the progress report
+            updateProgressReport(Math.floor(days));
+
+            // Save to Supabase
+            await saveDataToSupabase(days, startDate);
+        }
+
+        // Function to save data to Supabase
+        async function saveDataToSupabase(days, startDate) {
+            const { data, error } = await supabase
+                .from('smoke_free_data')
+                .insert([{ days, start_date: startDate.toISOString() }]);
+
+            if (error) {
+                console.error("Error saving data:", error);
+            } else {
+                console.log("Data saved:", data);
+            }
+        }
+
+        // Function to load data from Supabase
+        async function loadDataFromSupabase(callback) {
+            const { data, error } = await supabase
+                .from('smoke_free_data')
+                .select('days, start_date')
+                .order('start_date', { ascending: false })
+                .limit(1);
+
+            if (error) {
+                console.error("Error loading data:", error);
+            } else if (data.length > 0) {
+                callback(data[0].days, new Date(data[0].start_date));
+            }
+        }
+
+        // Function to update the progress report
+        function updateProgressReport(days) {
+            const progressList = document.getElementById('progress-list');
+            progressList.innerHTML = healthBenefits
+                .map(benefit => `
+                    <div class="milestone-card ${days >= benefit.days ? 'completed' : ''}">
+                        <div class="milestone-icon ${days >= benefit.days ? 'completed' : 'upcoming'}"></div>
+                        <div class="milestone-details">
+                            <h4>${benefit.days} Day${benefit.days > 1 ? 's' : ''} Completed</h4>
+                            ${days >= benefit.days ? `<p>${benefit.benefit}</p>` : ''}
+                        </div>
+                    </div>
+                `)
+                .join('');
+
+            // Trigger confetti animation when a milestone is reached
+            if (days > 0 && days % 1 === 0) {
+                triggerConfetti();
+            }
+        }
+
+        // Function to trigger confetti animation
+        function triggerConfetti() {
+            const confetti = document.getElementById('confetti');
+            confetti.innerHTML = '';
+            for (let i = 0; i < 100; i++) {
+                const confettiPiece = document.createElement('div');
+                confettiPiece.style.left = `${Math.random() * 100}%`;
+                confettiPiece.style.animationDelay = `${Math.random() * 2}s`;
+                confettiPiece.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+                confetti.appendChild(confettiPiece);
+            }
+            setTimeout(() => confetti.innerHTML = '', 3000); // Clear confetti after 3 seconds
+        }
+
+        // Function to toggle progress report visibility
+        function toggleProgressReport() {
+            const progressReport = document.getElementById('progress-report');
+            progressReport.classList.toggle('visible');
+        }
+
+        // Function to start tracking
+        function startTracking() {
+            startDate = new Date();
+            document.getElementById('start-button').disabled = true;
+            interval = setInterval(updateCounter, 10); // Update every 10ms for milliseconds
+        }
+
+        // Function to reset the counter
+        async function resetCounter() {
+            clearInterval(interval);
+            counter = 0;
+            startDate = null;
+            document.getElementById('counter').textContent = 0;
+            document.getElementById('time-counter').textContent = '0 days 00:00:00.000';
+            document.getElementById('progress-bar').style.width = '0';
+            document.getElementById('report-progress-bar').style.width = '0';
+            document.getElementById('percentage-display').textContent = '0.00000%';
+            document.getElementById('start-date').textContent = '';
+            document.getElementById('progress-list').innerHTML = '';
+            document.getElementById('start-button').disabled = false;
+
+            // Clear data from Supabase
+            const { error } = await supabase
+                .from('smoke_free_data')
+                .delete()
+                .neq('id', 0); // Delete all rows
+
+            if (error) {
+                console.error("Error resetting data:", error);
+            } else {
+                console.log("Data reset successfully");
+            }
+
+            alert("It's okay! Every day is a new opportunity to quit. You can do it!");
+        }
+
+        // Load data from Supabase on page load
+        window.onload = async function () {
+            const { data, error } = await supabase
+                .from('smoke_free_data')
+                .select('days, start_date')
+                .order('start_date', { ascending: false })
+                .limit(1);
+
+            if (data && data.length > 0) {
+                startDate = new Date(data[0].start_date);
+                document.getElementById('start-button').disabled = true;
+                interval = setInterval(updateCounter, 10); // Update every 10ms for milliseconds
+            }
+        };
+
+        // Add event listener to the Start Button
+        document.getElementById('start-button').addEventListener('click', startTracking);
+    </script>
+</body>
+</html>
