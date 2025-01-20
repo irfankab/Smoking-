@@ -5,170 +5,116 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Quit Smoking Tracker</title>
     <style>
+        /* Black and Green Theme */
         body {
-            font-family: 'Arial', sans-serif;
-            background: #121212;
-            color: #ffffff;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
+            font-family: Arial, sans-serif;
+            background-color: #000;
+            color: #00ff00;
+            text-align: center;
+            padding: 20px;
         }
         .container {
-            background: #1e1e1e;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-            text-align: center;
             max-width: 600px;
-            width: 100%;
+            margin: 0 auto;
+            background: #111;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
         }
         h1 {
-            color: #4CAF50;
-            margin-bottom: 20px;
-        }
-        #counter {
-            font-size: 3.5em;
-            color: #4CAF50;
-            font-weight: bold;
-            margin: 20px 0;
-        }
-        #time-counter {
-            font-size: 1.5em;
-            color: #ffffff;
-            margin: 20px 0;
+            color: #00ff00;
         }
         .progress-container {
-            background: #333333;
-            border-radius: 10px;
-            overflow: hidden;
+            width: 100%;
+            background-color: #333;
+            border-radius: 5px;
             margin: 20px 0;
-            position: relative;
         }
         .progress-bar {
             height: 20px;
-            background: #4CAF50;
+            background-color: #00ff00;
+            border-radius: 5px;
             width: 0;
-            transition: width 0.5s ease;
+        }
+        button {
+            background-color: #00ff00;
+            color: #000;
+            border: none;
+            padding: 10px 20px;
+            margin: 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #00cc00;
+        }
+        .reset {
+            background-color: #ff0000;
+            color: #fff;
+        }
+        .reset:hover {
+            background-color: #cc0000;
         }
         .progress-report {
-            margin: 20px 0;
-            text-align: left;
             display: none;
+            margin-top: 20px;
         }
         .progress-report.visible {
             display: block;
-        }
-        .progress-report h3 {
-            color: #4CAF50;
-        }
-        .percentage-display {
-            font-size: 1.5em;
-            font-weight: bold;
-            color: #4CAF50;
-            margin-top: 10px;
         }
         .milestone-card {
             display: flex;
             align-items: center;
             margin: 10px 0;
-            padding: 15px;
-            background: #333333;
-            border-radius: 10px;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }
-        .milestone-card.completed {
-            background: #2E7D32;
-        }
-        .milestone-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            padding: 10px;
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            background-color: #222;
         }
         .milestone-icon {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
+            width: 20px;
+            height: 20px;
             border-radius: 50%;
-            background: #4CAF50;
-            margin-right: 15px;
+            margin-right: 10px;
         }
-        .milestone-icon.completed::after {
-            content: '✓';
-            color: white;
-            font-size: 1.5em;
+        .milestone-icon.completed {
+            background-color: #00ff00;
         }
         .milestone-icon.upcoming {
-            background: #555;
+            background-color: #333;
         }
         .milestone-details {
             flex: 1;
         }
-        .milestone-details h4 {
-            margin: 0;
+        .percentage-display {
             font-size: 1.2em;
-            color: #ffffff;
+            margin: 10px 0;
+            color: #00ff00;
         }
-        .milestone-details p {
-            margin: 5px 0 0;
-            color: #cccccc;
+        .password-container {
+            display: none;
+            margin: 10px 0;
         }
-        .confetti {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            pointer-events: none;
-            z-index: 1000;
+        .password-container input {
+            padding: 10px;
+            border: 1px solid #00ff00;
+            border-radius: 5px;
+            margin-right: 10px;
+            background-color: #222;
+            color: #00ff00;
         }
-        .confetti div {
-            position: absolute;
-            width: 10px;
-            height: 10px;
-            background: #ff0;
-            animation: fall linear infinite;
-        }
-        @keyframes fall {
-            0% { transform: translateY(-10vh) rotate(0deg); }
-            100% { transform: translateY(110vh) rotate(360deg); }
-        }
-        button {
-            padding: 10px 20px;
-            font-size: 1em;
-            color: white;
-            background: #4CAF50;
+        .password-container button {
+            background-color: #00ff00;
+            color: #000;
             border: none;
+            padding: 10px 20px;
             border-radius: 5px;
             cursor: pointer;
-            transition: background 0.3s ease;
-            margin: 5px;
         }
-        button.reset {
-            background: #f44336;
-        }
-        button.reset:hover {
-            background: #d32f2f;
-        }
-        button.progress-btn {
-            background: #2196F3;
-        }
-        button.progress-btn:hover {
-            background: #1976D2;
-        }
-        button:hover {
-            background: #45a049;
-        }
-        .start-date {
-            margin: 20px 0;
-            font-size: 0.9em;
-            color: #777;
+        .password-container button:hover {
+            background-color: #00cc00;
         }
     </style>
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
     <div class="container">
@@ -178,8 +124,12 @@
         <div class="progress-container">
             <div class="progress-bar" id="progress-bar"></div>
         </div>
+        <div class="password-container" id="password-container">
+            <input type="password" id="password-input" placeholder="Enter password">
+            <button id="confirm-password">Confirm Password</button>
+        </div>
         <button id="start-button">Start Tracking</button>
-        <button class="reset" onclick="resetCounter()">I slipped up, reset counter</button>
+        <button class="reset" onclick="showPasswordPrompt('reset')">I slipped up, reset counter</button>
         <button class="progress-btn" onclick="toggleProgressReport()">Progress Report</button>
         <div class="start-date" id="start-date"></div>
 
@@ -193,17 +143,18 @@
         </div>
     </div>
 
-    <div class="confetti" id="confetti"></div>
-
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script>
-        const supabaseUrl = "https://ryqxjdxhilnwcfyaixfa.supabase.co";
-        const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJ5cXhqZHhoaWxud2NmeWFpeGZhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzczNTE2MTUsImV4cCI6MjA1MjkyNzYxNX0.lwbd8BDvyCIH-gwDTyq_UStFCCcC4XYrpXd9HnEnyEA";
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
-
+        const PASSWORD = "smoke";
         let counter = 0;
         let startDate = null;
         let interval = null;
         const goalDays = 30;
+
+        // Initialize Supabase with your credentials
+        const supabaseUrl = 'https://ydwrxeceymcavnzgtedj.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inlkd3J4ZWNleW1jYXZuemd0ZWRqIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MzczNjA5MTYsImV4cCI6MjA1MjkzNjkxNn0.INi4cE0r9roK34Mokz3u6ofyqrtsu-4YAwAO_yula1c';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
         const healthBenefits = [
             { days: 1, benefit: "Your heart rate and blood pressure drop to normal levels." },
@@ -213,7 +164,9 @@
             { days: 30, benefit: "Your risk of heart disease decreases significantly." }
         ];
 
-        async function updateCounter() {
+        function updateCounter() {
+            if (!startDate) return;
+            
             const now = new Date();
             const timeDiff = now - startDate;
             const days = timeDiff / (1000 * 60 * 60 * 24);
@@ -233,45 +186,53 @@
             document.getElementById('start-date').textContent = `Start Date: ${startDate.toDateString()}`;
 
             updateProgressReport(Math.floor(days));
-            await saveDataToSupabase(days, startDate);
         }
 
-        async function saveDataToSupabase(days, startDate) {
-            try {
-                const { error } = await supabase
-                    .from('smoke_free_data')
-                    .upsert([
-                        { 
-                            days: Math.floor(days), 
-                            start_date: startDate.toISOString(),
-                            last_updated: new Date().toISOString()
-                        }
-                    ]);
+        async function saveDataToSupabase() {
+            if (!startDate) return;
 
-                if (error) throw error;
-                console.log("Data saved successfully");
+            try {
+                const { data, error } = await supabase
+                    .from('smoking_tracker')
+                    .upsert({
+                        id: '12345678-1234-1234-1234-123456789012', // Hardcoded ID
+                        start_date: startDate.toISOString()
+                    });
+
+                if (error) {
+                    console.error('Error saving data:', error.message);
+                    alert('Failed to save progress. Please try again.');
+                } else {
+                    console.log('Data saved successfully:', data);
+                }
             } catch (error) {
-                console.error("Error saving data:", error);
+                console.error('Error saving data:', error);
+                alert('Failed to save progress. Please try again.');
             }
         }
 
-        async function loadDataFromSupabase() {
+        async function loadData() {
             try {
                 const { data, error } = await supabase
-                    .from('smoke_free_data')
-                    .select('*')
-                    .order('last_updated', { ascending: false })
-                    .limit(1);
+                    .from('smoking_tracker')
+                    .select('start_date')
+                    .eq('id', '12345678-1234-1234-1234-123456789012') // Hardcoded ID
+                    .single();
 
-                if (error) throw error;
+                if (error) {
+                    if (error.code !== 'PGRST116') {
+                        console.error('Error loading data:', error);
+                    }
+                    return;
+                }
 
-                if (data && data.length > 0) {
-                    startDate = new Date(data[0].start_date);
+                if (data && data.start_date) {
+                    startDate = new Date(data.start_date);
                     document.getElementById('start-button').disabled = true;
                     interval = setInterval(updateCounter, 10);
                 }
             } catch (error) {
-                console.error("Error loading data:", error);
+                console.error('Error loading data:', error);
             }
         }
 
@@ -288,23 +249,6 @@
                     </div>
                 `)
                 .join('');
-
-            if (days > 0 && days % 1 === 0) {
-                triggerConfetti();
-            }
-        }
-
-        function triggerConfetti() {
-            const confetti = document.getElementById('confetti');
-            confetti.innerHTML = '';
-            for (let i = 0; i < 100; i++) {
-                const confettiPiece = document.createElement('div');
-                confettiPiece.style.left = `${Math.random() * 100}%`;
-                confettiPiece.style.animationDelay = `${Math.random() * 2}s`;
-                confettiPiece.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
-                confetti.appendChild(confettiPiece);
-            }
-            setTimeout(() => confetti.innerHTML = '', 3000);
         }
 
         function toggleProgressReport() {
@@ -312,42 +256,73 @@
             progressReport.classList.toggle('visible');
         }
 
-        function startTracking() {
-            startDate = new Date();
-            document.getElementById('start-button').disabled = true;
-            interval = setInterval(updateCounter, 10);
-            saveDataToSupabase(0, startDate);
-        }
-
-        async function resetCounter() {
+        async function startTracking() {
             try {
-                const { error } = await supabase
-                    .from('smoke_free_data')
-                    .delete()
-                    .not('id', 'is', null);
-
-                if (error) throw error;
-
-                clearInterval(interval);
-                counter = 0;
-                startDate = null;
-                document.getElementById('counter').textContent = '0';
-                document.getElementById('time-counter').textContent = '0 days 00:00:00.000';
-                document.getElementById('progress-bar').style.width = '0';
-                document.getElementById('report-progress-bar').style.width = '0';
-                document.getElementById('percentage-display').textContent = '0.00000%';
-                document.getElementById('start-date').textContent = '';
-                document.getElementById('progress-list').innerHTML = '';
-                document.getElementById('start-button').disabled = false;
-
-                alert("It's okay! Every day is a new opportunity to quit. You can do it!");
+                startDate = new Date();
+                document.getElementById('start-button').disabled = true;
+                interval = setInterval(updateCounter, 10);
+                await saveDataToSupabase();
             } catch (error) {
-                console.error("Error resetting data:", error);
+                console.error('Error starting tracker:', error);
+                alert('Failed to start tracking. Please try again.');
+                resetCounter();
             }
         }
 
-        window.onload = loadDataFromSupabase;
-        document.getElementById('start-button').addEventListener('click', startTracking);
+        async function resetCounter() {
+            clearInterval(interval);
+            counter = 0;
+            startDate = null;
+            document.getElementById('counter').textContent = '0';
+            document.getElementById('time-counter').textContent = '0 days 00:00:00.000';
+            document.getElementById('progress-bar').style.width = '0';
+            document.getElementById('report-progress-bar').style.width = '0';
+            document.getElementById('percentage-display').textContent = '0.00000%';
+            document.getElementById('start-date').textContent = '';
+            document.getElementById('progress-list').innerHTML = '';
+            document.getElementById('start-button').disabled = false;
+
+            try {
+                const { error } = await supabase
+                    .from('smoking_tracker')
+                    .delete()
+                    .eq('id', '12345678-1234-1234-1234-123456789012'); // Hardcoded ID
+
+                if (error) {
+                    console.error('Error resetting data:', error);
+                    alert('Failed to reset tracker. Please try again.');
+                    return;
+                }
+
+                alert("It's okay! Every day is a new opportunity to quit. You can do it!");
+            } catch (error) {
+                console.error('Error resetting data:', error);
+                alert('Failed to reset tracker. Please try again.');
+            }
+        }
+
+        function showPasswordPrompt(action) {
+            const passwordContainer = document.getElementById('password-container');
+            passwordContainer.style.display = 'block';
+
+            document.getElementById('confirm-password').onclick = function() {
+                const passwordInput = document.getElementById('password-input').value;
+                if (passwordInput === PASSWORD) {
+                    passwordContainer.style.display = 'none';
+                    if (action === 'start') {
+                        startTracking();
+                    } else if (action === 'reset') {
+                        resetCounter();
+                    }
+                } else {
+                    alert("Incorrect password. Please try again.");
+                }
+            };
+        }
+
+        // Initialize the app
+        window.addEventListener('load', loadData);
+        document.getElementById('start-button').addEventListener('click', () => showPasswordPrompt('start'));
     </script>
 </body>
 </html>
